@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+import datetime
 
 class BiccameraSpider(scrapy.Spider):
     name = "biccamera"
     start_urls = [
         'http://www.biccamera.com/bc/c/contents/sitemap/index.jsp'
-        #'http://www.biccamera.com/bc/disp/CSfDispListPage_001.jsp?dispNo=001150140&'
     ]
 
     @staticmethod
@@ -54,7 +54,8 @@ class BiccameraSpider(scrapy.Spider):
                 'url_': response.url
             }
             next_page = response.css('.footNav p.next a::attr("href")').extract_first()
-            for detail in response.css('.detail'):
+            for prod_box in response.css('.prod_box'):
+                detail = prod_box.css('.detail')
                 link = detail.css('.name a::attr("href")').extract_first()
                 goods_no = re.findall(r'GOODS_NO=(\d+)', link) 
                 if len(goods_no) == 1:
@@ -63,7 +64,9 @@ class BiccameraSpider(scrapy.Spider):
                         'disp_no': dispNo,
                         'name': detail.css('.name a::text').extract_first(),
                         'goods_no': goods_no[0],
+                        'stock': prod_box.css('.label_cell.active>span::text').extract_first(),
                         'bic_price': detail.css('span.val::text').extract_first().replace(r',',''),
+                        'time': datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                     }
             if next_page is not None:
                  yield response.follow(next_page, self.page_parse)
