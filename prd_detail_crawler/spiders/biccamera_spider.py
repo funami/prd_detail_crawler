@@ -50,9 +50,6 @@ class BiccameraSpider(scrapy.Spider):
 
         # これ以上、細分化したカテゴリーがない場合
         if count_cat_link == 0:
-            yield {
-                'url_': response.url
-            }
             next_page = response.css('.footNav p.next a::attr("href")').extract_first()
             for prod_box in response.css('.prod_box'):
                 detail = prod_box.css('.detail')
