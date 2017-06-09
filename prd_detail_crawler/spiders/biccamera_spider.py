@@ -58,12 +58,13 @@ class BiccameraSpider(scrapy.Spider):
                 if len(goods_no) == 1:
                     yield {
                         'type': 'detail',
-                        'disp_no': dispNo,
+                        'parent_no': dispNo,
                         'name': detail.css('.name a::text').extract_first(),
-                        'goods_no': goods_no[0],
+                        'no': goods_no[0],
                         'stock': prod_box.css('.label_cell.active>span::text').extract_first(),
                         'bic_price': detail.css('span.val::text').extract_first().replace(r',',''),
                         'time': datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                        'url': link,
                     }
             if next_page is not None:
                  yield response.follow(next_page, self.page_parse)
