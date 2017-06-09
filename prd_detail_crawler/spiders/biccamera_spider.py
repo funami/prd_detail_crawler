@@ -24,7 +24,7 @@ class BiccameraSpider(scrapy.Spider):
             if dispNo is not None:
                 yield {
                     'type': 'category_top',
-                    'parent': None,
+                    'parent_no': None,
                     'no': dispNo,
                     'name': link.css('a::text').extract_first(),
                     'url': url,
@@ -40,7 +40,7 @@ class BiccameraSpider(scrapy.Spider):
             if dispNo is not None and re.match(dispNo, parent_dispNo) is None:
                 yield {
                     'type': 'category',
-                    'parent': parent_dispNo,
+                    'parent_no': parent_dispNo,
                     'no': dispNo,
                     'name': link.css('a::text').extract_first(),
                     'url': url,
